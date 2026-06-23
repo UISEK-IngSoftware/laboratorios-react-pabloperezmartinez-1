@@ -1,8 +1,21 @@
+import { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
-import { pokemons } from "../data/pokemons";
+// import { pokemons } from "../data/pokemons";
+import { fetchPokemons } from "../services/pokemonService";
 import PokemonCard from "./PokemonCard";
 
 export default function PokemonList() {
+    const [pokemons, setPokemons] = useState([]);
+
+    useEffect(() => {
+        fetchPokemons().then((data) => {
+            setPokemons(data);
+        }).catch((error) => {
+            alert("Error obteniendo pokemons. Por favor, inténtelo de nuevo más tarde.");
+            console.error("Error obteniendo pokemons:", error);
+        });
+    }, []);
+
     return(
         <Grid container spacing={2}>
             {pokemons.map(
