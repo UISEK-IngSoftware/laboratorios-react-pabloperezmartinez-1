@@ -1,9 +1,23 @@
-import { Grid } from "@mui/material";
-import { pokemons } from "../data/pokemons";
+import { useState, useEffect } from "react";
+import { Grid, Typography } from "@mui/material";
 import PokemonCard from "../components/PokemonCard";
 import "./PokemonList.css";
+import { getPokemonList } from "../services/pokemonService";
 
 export default function PokemonList() {
+    const [pokemons, setPokemons] = useState([]);
+    const [errorMsg, setErrorMsg] = useState("");
+
+
+    useEffect( () => {
+        getPokemonList().then((pokemonsData) => {
+            setPokemons(pokemonsData);
+        }).catch((error) => {
+            setErrorMsg("Error obteniendo lista pokemons.");
+            alert("Error obteniendo lista pokemons:", error);
+        })
+    }, []);
+
     return (
         <Grid container spacing={2}>
             { pokemons.map((pokemon) => (
@@ -11,6 +25,13 @@ export default function PokemonList() {
                     <PokemonCard pokemon={pokemon} />
                 </Grid>
             ))}
+            { errorMsg !== "" && (
+                <Grid item xs={12}>
+                    <Typography color="error">
+                        {errorMsg}
+                    </Typography>
+                </Grid>
+            )}
         </Grid>
     );
 }
