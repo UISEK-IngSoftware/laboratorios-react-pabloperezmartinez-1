@@ -3,9 +3,11 @@ import { useState } from "react";
 import { Box, Button, TextField, Typography, Alert } from "@mui/material";
 import { addPokemon } from "../services/pokemonService";
 import "./PokemonForm.css";
+import Spinner from "./Spinner";
 
 export default function PokemonForm() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [pokemonData, setPokemonData] = useState({
     name: "",
@@ -26,6 +28,7 @@ export default function PokemonForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     addPokemon(pokemonData)
       .then(() => {
         alert("Pokémon agregado exitosamente!");
@@ -36,8 +39,15 @@ export default function PokemonForm() {
         setErrorMsg(
           "Ocurrió un error al agregar el Pokémon. Por favor, inténtalo de nuevo.",
         );
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <>
